@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  be:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: room-backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: room_password
+      DB_NAME: room_reservation
+      JWT_SECRET: your_super_secret_key
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+
+  db:
+    image: postgres:14
+    container_name: room-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: room_password
+      POSTGRES_DB: room_reservation
+
+volumes:
+  pgdata:
